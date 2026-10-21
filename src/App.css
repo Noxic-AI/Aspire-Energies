@@ -1,0 +1,99 @@
+.container-shell {
+  width: min(1200px, 100% - 2.5rem);
+  margin-inline: auto;
+}
+
+.display-font {
+  font-family: "Fraunces", serif;
+  letter-spacing: -0.02em;
+}
+
+.eyebrow {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.grain {
+  background-image:
+    radial-gradient(
+      circle at 18% 14%,
+      rgba(58, 138, 119, 0.08),
+      transparent 38%
+    ),
+    radial-gradient(
+      circle at 92% 0%,
+      rgba(226, 178, 46, 0.17),
+      transparent 34%
+    ),
+    linear-gradient(180deg, #f8fbf9, #f6faf7);
+}
+
+.image-wash {
+  background: linear-gradient(
+    180deg,
+    rgba(8, 33, 39, 0.08) 4%,
+    rgba(8, 33, 39, 0.68) 82%
+  );
+}
+
+.motion-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s ease;
+  transition-delay: var(--motion-delay, 0ms);
+}
+
+.motion-in.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  animation: reveal-up 0.8s ease forwards;
+}
+
+.delay-1 {
+  animation-delay: 90ms;
+}
+
+.delay-2 {
+  animation-delay: 180ms;
+}
+
+.delay-3 {
+  animation-delay: 270ms;
+}
+
+.solar-drift {
+  animation: drift 7s ease-in-out infinite;
+}
+
+@keyframes reveal-up {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 640px) {
+  .container-shell {
+    width: min(1200px, 100% - 1.5rem);
+  }
+}

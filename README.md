@@ -43,15 +43,15 @@ Update only this object when changing branding or project photos:
 
 ```js
 export const siteImages = {
-	hero: '/hero-solar.png',
-	projects: {
-		campus: '/project-campus.png',
-		factory: '/project-factory.png',
-		home: '/project-home.png',
-		warehouse: '/project-warehouse.png',
-	},
-	gallery: ['/hero-solar.png', '/project-factory.png', '/project-home.png'],
-}
+  hero: "/hero-solar.png",
+  projects: {
+    campus: "/project-campus.png",
+    factory: "/project-factory.png",
+    home: "/project-home.png",
+    warehouse: "/project-warehouse.png",
+  },
+  gallery: ["/hero-solar.png", "/project-factory.png", "/project-home.png"],
+};
 ```
 
 ### Where to put images
@@ -91,4 +91,5 @@ Current required image files:
 
 - Contact form is currently UI-only (no backend submission).
 - The page uses smooth scroll section navigation with anchor IDs.
+
 # Aspire-Energies
