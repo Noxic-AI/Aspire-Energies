@@ -373,7 +373,7 @@ function About() {
 
         <div className="relative min-h-[380px] overflow-hidden rounded-[28px] bg-accent/20">
           <div className="absolute left-8 top-8 z-10 rounded-full border border-secondary/15 bg-background/85 px-4 py-2 text-[10px] font-bold uppercase tracking-[.16em] text-secondary backdrop-blur">
-            Est. 2012 · Bengaluru
+            Est. 2012 · Redhills, Chennai
           </div>
 
           <div className="absolute inset-0 bg-[linear-gradient(135deg,hsl(var(--accent)/.38),transparent_55%)]" />

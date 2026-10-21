@@ -11,6 +11,6 @@ export const siteImages = {
 
 export const siteCompany = {
   name: "HelioGrid Solar Systems",
-  phone: "+91 80 4712 6810",
-  locations: "Bengaluru · Pune · Ahmedabad",
+  phone: "+91 96770 58193",
+  locations: "Redhills, Chennai",
 };
