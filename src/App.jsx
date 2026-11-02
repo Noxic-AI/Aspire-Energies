@@ -99,6 +99,123 @@ function Motion({ children, className = "", delay = 0 }) {
   );
 }
 
+function ScrollProgress() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalScroll =
+        document.documentElement.scrollHeight - window.innerHeight;
+      if (totalScroll > 0) {
+        setProgress((window.scrollY / totalScroll) * 100);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <div className="fixed top-0 inset-x-0 z-50 h-[3px] bg-transparent pointer-events-none">
+      <div
+        className="h-full bg-gradient-to-r from-primary via-[#efca5e] to-accent transition-all duration-75 ease-out shadow-[0_0_8px_rgba(226,178,46,0.6)]"
+        style={{ width: `${progress}%` }}
+      />
+    </div>
+  );
+}
+
+function CustomCursor() {
+  const dotRef = useRef(null);
+  const ringRef = useRef(null);
+  const [hovered, setHovered] = useState(false);
+  const [clicked, setClicked] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || window.matchMedia("(hover: none)").matches) {
+      return;
+    }
+
+    let mouseX = -100;
+    let mouseY = -100;
+    let ringX = -100;
+    let ringY = -100;
+    let rafId = null;
+
+    const onMouseMove = (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      if (!visible) setVisible(true);
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      }
+    };
+
+    const render = () => {
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
+      }
+      rafId = requestAnimationFrame(render);
+    };
+    rafId = requestAnimationFrame(render);
+
+    const onMouseDown = () => setClicked(true);
+    const onMouseUp = () => setClicked(false);
+    const onMouseLeave = () => setVisible(false);
+    const onMouseEnter = () => setVisible(true);
+
+    const onMouseOver = (e) => {
+      const target = e.target.closest(
+        "button, a, input, select, textarea, [role='button'], [role='tab'], .cursor-hover"
+      );
+      setHovered(!!target);
+    };
+
+    window.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mouseup", onMouseUp);
+    document.addEventListener("mouseleave", onMouseLeave);
+    document.addEventListener("mouseenter", onMouseEnter);
+    document.addEventListener("mouseover", onMouseOver, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mouseup", onMouseUp);
+      document.removeEventListener("mouseleave", onMouseLeave);
+      document.removeEventListener("mouseenter", onMouseEnter);
+      document.removeEventListener("mouseover", onMouseOver);
+    };
+  }, [visible]);
+
+  return (
+    <div
+      className={`custom-cursor-container ${
+        visible ? "opacity-100" : "opacity-0"
+      } pointer-events-none fixed inset-0 z-[9999] transition-opacity duration-300`}
+    >
+      <div
+        ref={dotRef}
+        className="fixed -left-1 -top-1 h-2.5 w-2.5 rounded-full bg-primary pointer-events-none shadow-[0_0_8px_rgba(226,178,46,0.8)] will-change-transform"
+      />
+      <div
+        ref={ringRef}
+        className={`fixed -left-4 -top-4 rounded-full border pointer-events-none will-change-transform transition-[width,height,margin,border-color,background-color,transform] duration-200 ease-out ${
+          hovered
+            ? "h-12 w-12 -ml-2 -mt-2 border-primary bg-primary/20 backdrop-blur-[0.5px] scale-110 shadow-[0_0_15px_rgba(226,178,46,0.4)]"
+            : clicked
+              ? "h-7 w-7 ml-0.5 mt-0.5 border-accent bg-accent/30 scale-90"
+              : "h-8 w-8 border-primary/50 bg-transparent"
+        }`}
+      />
+    </div>
+  );
+}
+
 function Logo({ light = false }) {
   return (
     <a
@@ -365,8 +482,8 @@ function About() {
                 "Stay involved",
                 "Our service team remains accountable long after handover.",
               ],
-            ].map(([num, title, text]) => (
-              <div key={num}>
+            ].map(([num, title, text], index) => (
+              <Motion key={num} delay={index * 110}>
                 <span className="font-mono text-xs font-bold text-primary">
                   {num}
                 </span>
@@ -378,13 +495,13 @@ function About() {
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
                   {text}
                 </p>
-              </div>
+              </Motion>
             ))}
           </div>
         </div>
 
-        <div className="relative min-h-[380px] overflow-hidden rounded-[28px] bg-accent/20">
-          <div className="absolute left-8 top-8 z-10 rounded-full border border-secondary/15 bg-background/85 px-4 py-2 text-[10px] font-bold uppercase tracking-[.16em] text-secondary backdrop-blur">
+        <Motion delay={160} className="relative min-h-[400px] overflow-hidden rounded-[28px] bg-accent/20">
+          <div className="absolute left-8 top-8 z-10 rounded-full border border-secondary/15 bg-background/85 px-4 py-2 text-[10px] font-bold uppercase tracking-[.16em] text-secondary backdrop-blur shadow-sm">
             Est. 2021 · Redhills, Chennai
           </div>
 
@@ -392,22 +509,20 @@ function About() {
 
           <div className="absolute bottom-0 right-0 h-[82%] w-[83%] rounded-tl-[160px] bg-secondary/90" />
 
-          <div className="absolute bottom-[18%] right-[10%] flex h-44 w-52 flex-col items-center justify-center rounded-2xl border-4 border-primary/60 bg-white p-4 shadow-2xl">
+          {/* Logo completely filling the framed box */}
+          <div className="absolute bottom-[12%] right-[6%] sm:right-[10%] h-48 w-56 sm:h-56 sm:w-64 overflow-hidden rounded-2xl border-4 border-primary bg-white shadow-2xl transition-all duration-500 hover:scale-[1.04] hover:shadow-[0_20px_50px_rgba(226,178,46,0.35)]">
             <img
               src={siteImages.logo}
               alt="Aspire Energies logo"
-              className="h-28 w-28 object-contain"
+              className="h-full w-full object-cover"
             />
-            <span className="mt-2 text-[11px] font-bold tracking-[.15em] text-secondary">
-              ASPIRE ENERGIES
-            </span>
           </div>
 
-          <div className="absolute bottom-8 left-8 max-w-[230px] text-sm leading-6 text-secondary-foreground/70">
+          <div className="absolute bottom-8 left-8 max-w-[230px] text-sm leading-6 text-secondary-foreground/80">
             From rooftop assessments to commissioning day, we make the complex
             feel considered.
           </div>
-        </div>
+        </Motion>
       </div>
     </section>
   );
@@ -450,85 +565,106 @@ function SolarTypes() {
           />
 
           <div
-            className="flex rounded-full border border-secondary/15 bg-background/60 p-1"
+            className="relative flex rounded-full border border-secondary/15 bg-background/80 p-1.5 shadow-inner"
             role="tablist"
           >
+            {/* Sliding background pill indicator */}
+            <div
+              className={`absolute top-1.5 bottom-1.5 rounded-full bg-secondary transition-all duration-300 ease-out shadow-sm ${
+                active === "dcr"
+                  ? "left-1.5 w-[calc(50%-6px)]"
+                  : "left-[50%] w-[calc(50%-6px)]"
+              }`}
+            />
+
             <button
               onClick={() => setActive("dcr")}
-              className={`rounded-full px-5 py-3 text-xs font-bold transition-all ${
+              className={`relative z-10 w-24 sm:w-28 rounded-full py-2.5 text-xs font-bold transition-colors duration-300 ${
                 active === "dcr"
-                  ? "bg-secondary text-secondary-foreground"
-                  : "text-muted-foreground"
+                  ? "text-secondary-foreground"
+                  : "text-muted-foreground hover:text-secondary"
               }`}
               data-testid="tab-dcr"
+              role="tab"
+              aria-selected={active === "dcr"}
             >
               DCR
             </button>
 
             <button
               onClick={() => setActive("ndcr")}
-              className={`rounded-full px-5 py-3 text-xs font-bold transition-all ${
+              className={`relative z-10 w-24 sm:w-28 rounded-full py-2.5 text-xs font-bold transition-colors duration-300 ${
                 active === "ndcr"
-                  ? "bg-secondary text-secondary-foreground"
-                  : "text-muted-foreground"
+                  ? "text-secondary-foreground"
+                  : "text-muted-foreground hover:text-secondary"
               }`}
               data-testid="tab-ndcr"
+              role="tab"
+              aria-selected={active === "ndcr"}
             >
               NDCR
             </button>
           </div>
         </div>
 
-        <div className="mt-14 grid overflow-hidden rounded-[28px] bg-secondary lg:grid-cols-[.9fr_1.1fr]">
-          <div className="relative min-h-[310px] overflow-hidden p-8 sm:p-12">
-            <div className="absolute -right-20 -top-28 h-80 w-80 rounded-full border border-primary/30" />
-            <div className="absolute -right-8 -top-16 h-56 w-56 rounded-full border border-primary/20" />
+        <Motion delay={100}>
+          <div
+            key={active}
+            className="mt-14 grid overflow-hidden rounded-[28px] bg-secondary shadow-xl lg:grid-cols-[.9fr_1.1fr]"
+          >
+            <div className="relative min-h-[310px] overflow-hidden p-8 sm:p-12 animate-tab-in-left">
+              <div className="absolute -right-20 -top-28 h-80 w-80 rounded-full border border-primary/30 animate-pulse-slow" />
+              <div className="absolute -right-8 -top-16 h-56 w-56 rounded-full border border-primary/20" />
 
-            <div className="solar-drift absolute bottom-10 left-10 grid h-28 w-28 place-items-center rounded-full bg-primary text-center text-xs font-bold uppercase tracking-[.12em] text-primary-foreground">
-              Power
-              <br />
-              forward
+              <div className="solar-drift absolute bottom-10 left-10 grid h-28 w-28 place-items-center rounded-full bg-primary text-center text-xs font-bold uppercase tracking-[.12em] text-primary-foreground shadow-lg">
+                Power
+                <br />
+                forward
+              </div>
+
+              <div className="relative max-w-xs">
+                <span className="inline-block rounded-full bg-primary/15 border border-primary/30 px-3 py-1 eyebrow text-primary">
+                  {content.label}
+                </span>
+
+                <h3 className="display-font mt-5 text-4xl font-bold leading-none text-secondary-foreground">
+                  {content.title}
+                </h3>
+              </div>
             </div>
 
-            <div className="relative max-w-xs">
-              <p className="eyebrow text-primary">{content.label}</p>
+            <div className="bg-background p-8 sm:p-12 animate-tab-in-right">
+              <p className="max-w-xl text-lg leading-8 text-secondary">
+                {content.copy}
+              </p>
 
-              <h3 className="display-font mt-5 text-4xl font-bold leading-none text-secondary-foreground">
-                {content.title}
-              </h3>
+              <ul className="mt-9 grid gap-4">
+                {content.points.map((point, index) => (
+                  <li
+                    key={point}
+                    className="animate-point flex gap-3 text-sm font-medium text-muted-foreground"
+                    style={{ animationDelay: `${index * 80}ms` }}
+                  >
+                    <CircleCheck
+                      className="mt-0.5 shrink-0 text-accent transition-transform hover:scale-110"
+                      size={18}
+                    />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => scrollToId("contact")}
+                className="mt-10 inline-flex items-center gap-2 text-sm font-bold text-secondary underline decoration-primary decoration-2 underline-offset-4 transition-transform hover:translate-x-1 hover:text-accent"
+                data-testid={`button-${active}-advice`}
+              >
+                Talk to a solar advisor
+                <ArrowRight size={15} />
+              </button>
             </div>
           </div>
-
-          <div className="bg-background p-8 sm:p-12">
-            <p className="max-w-xl text-lg leading-8 text-secondary">
-              {content.copy}
-            </p>
-
-            <ul className="mt-9 grid gap-4">
-              {content.points.map((point) => (
-                <li
-                  key={point}
-                  className="flex gap-3 text-sm font-medium text-muted-foreground"
-                >
-                  <CircleCheck
-                    className="mt-0.5 shrink-0 text-accent"
-                    size={18}
-                  />
-                  {point}
-                </li>
-              ))}
-            </ul>
-
-            <button
-              onClick={() => scrollToId("contact")}
-              className="mt-10 text-sm font-bold text-secondary underline decoration-primary decoration-2 underline-offset-4 hover:text-accent"
-              data-testid={`button-${active}-advice`}
-            >
-              Talk to a solar advisor
-              <ArrowRight className="ml-2 inline" size={15} />
-            </button>
-          </div>
-        </div>
+        </Motion>
       </div>
     </section>
   );
@@ -629,9 +765,10 @@ function Finance() {
 
         <div className="grid gap-3 sm:grid-cols-2">
           {financeOptions.map(({ icon: Icon, title, copy }, index) => (
-            <div
+            <Motion
               key={title}
-              className={`rounded-2xl border border-border p-6 transition-colors hover:border-primary ${
+              delay={index * 90}
+              className={`rounded-2xl border border-border p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-primary ${
                 index === 3 ? "bg-[#e7eee9]" : "bg-card"
               }`}
               data-testid={`card-finance-${index}`}
@@ -643,7 +780,7 @@ function Finance() {
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 {copy}
               </p>
-            </div>
+            </Motion>
           ))}
         </div>
       </div>
@@ -677,7 +814,7 @@ function Features() {
       className="scroll-mt-24 border-y border-secondary/10 bg-[#f0d36b] py-24 sm:py-28"
     >
       <div className="container-shell grid gap-12 lg:grid-cols-[.65fr_1.35fr]">
-        <div>
+        <Motion delay={0}>
           <p className="eyebrow text-secondary/65">The Aspire Energies standard</p>
 
           <h2 className="display-font mt-4 text-4xl font-extrabold leading-none text-secondary sm:text-5xl">
@@ -694,13 +831,14 @@ function Features() {
               {siteCompany.address}
             </p>
           </div>
-        </div>
+        </Motion>
 
         <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2">
           {features.map(([title, text], index) => (
-            <div
+            <Motion
               key={title}
-              className="border-t border-secondary/20 pt-5"
+              delay={index * 80}
+              className="border-t border-secondary/20 pt-5 transition-transform duration-300 hover:translate-x-1"
               data-testid={`feature-${index}`}
             >
               <span className="font-mono text-xs text-secondary/55">
@@ -712,7 +850,7 @@ function Features() {
               <p className="mt-2 max-w-sm text-sm leading-6 text-secondary/70">
                 {text}
               </p>
-            </div>
+            </Motion>
           ))}
         </div>
       </div>
@@ -736,42 +874,42 @@ function Photos() {
         />
 
         <div className="mt-12 grid gap-4 sm:grid-cols-[1.35fr_.65fr]">
-          <div className="group relative aspect-[4/3] overflow-hidden rounded-3xl lg:aspect-[1.35]">
+          <Motion delay={50} className="group relative aspect-[4/3] overflow-hidden rounded-3xl lg:aspect-[1.35] shadow-md">
             <img
               src={photos[0]}
               alt="Residential solar project"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
 
-            <span className="absolute bottom-5 left-5 rounded-full bg-background/85 px-4 py-2 text-[11px] font-bold text-secondary backdrop-blur">
+            <span className="absolute bottom-5 left-5 rounded-full bg-background/85 px-4 py-2 text-[11px] font-bold text-secondary backdrop-blur shadow-sm">
               Residential / rooftop
             </span>
-          </div>
+          </Motion>
 
           <div className="grid gap-4">
-            <div className="group relative aspect-[4/3] overflow-hidden rounded-3xl lg:aspect-[1.35]">
+            <Motion delay={120} className="group relative aspect-[4/3] overflow-hidden rounded-3xl lg:aspect-[1.35] shadow-md">
               <img
                 src={photos[1]}
                 alt="Industrial solar project"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
 
-              <span className="absolute bottom-5 left-5 rounded-full bg-background/85 px-4 py-2 text-[11px] font-bold text-secondary backdrop-blur">
+              <span className="absolute bottom-5 left-5 rounded-full bg-background/85 px-4 py-2 text-[11px] font-bold text-secondary backdrop-blur shadow-sm">
                 Industrial / rooftop
               </span>
-            </div>
+            </Motion>
 
-            <div className="group relative aspect-[4/3] overflow-hidden rounded-3xl lg:aspect-[1.35]">
+            <Motion delay={180} className="group relative aspect-[4/3] overflow-hidden rounded-3xl lg:aspect-[1.35] shadow-md">
               <img
                 src={photos[2]}
                 alt="Home solar project at dusk"
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
 
-              <span className="absolute bottom-5 left-5 rounded-full bg-background/85 px-4 py-2 text-[11px] font-bold text-secondary backdrop-blur">
+              <span className="absolute bottom-5 left-5 rounded-full bg-background/85 px-4 py-2 text-[11px] font-bold text-secondary backdrop-blur shadow-sm">
                 Home / integrated
               </span>
-            </div>
+            </Motion>
           </div>
         </div>
       </div>
@@ -793,7 +931,7 @@ function Contact() {
       className="relative isolate z-10 scroll-mt-24 overflow-hidden bg-[#e7eee9] py-24 sm:py-32"
     >
       <div className="container-shell grid gap-14 lg:grid-cols-[.8fr_1.2fr]">
-        <div>
+        <Motion delay={0}>
           <SectionHeading
             eyebrow="Let's talk energy"
             title="Your roof has more to say."
@@ -803,7 +941,7 @@ function Contact() {
           <div className="mt-10 space-y-3.5 text-sm font-medium text-secondary">
             <a
               href={`tel:${siteCompany.phone.replace(/\s+/g, "")}`}
-              className="flex items-center gap-3 hover:text-accent"
+              className="flex items-center gap-3 hover:text-accent transition-colors"
               data-testid="link-contact-phone"
             >
               <Phone size={17} />
@@ -820,9 +958,9 @@ function Contact() {
               </div>
             </div>
           </div>
-        </div>
+        </Motion>
 
-        <div className="rounded-3xl bg-background p-7 shadow-[0_16px_50px_rgba(19,48,55,.08)] sm:p-10">
+        <Motion delay={120} className="rounded-3xl bg-background p-7 shadow-[0_16px_50px_rgba(19,48,55,.08)] sm:p-10">
           {sent ? (
             <div className="flex min-h-[360px] flex-col items-center justify-center text-center">
               <span className="grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground">
@@ -918,7 +1056,7 @@ function Contact() {
               </p>
             </form>
           )}
-        </div>
+        </Motion>
       </div>
     </section>
   );
@@ -971,6 +1109,8 @@ function App() {
 
   return (
     <div className="grain min-h-dvh overflow-hidden bg-background">
+      <ScrollProgress />
+      <CustomCursor />
       <Header />
 
       <main>

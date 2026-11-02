@@ -38,18 +38,35 @@
   );
 }
 
+/* Enhanced Scroll Motion & Reveal Animations */
 .motion-in {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(28px);
   transition:
-    opacity 0.7s ease,
-    transform 0.7s ease;
+    opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: var(--motion-delay, 0ms);
+  will-change: opacity, transform;
 }
 
 .motion-in.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.motion-scale {
+  opacity: 0;
+  transform: scale(0.96) translateY(20px);
+  transition:
+    opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--motion-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.motion-scale.is-visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
 }
 
 .reveal {
@@ -74,6 +91,67 @@
   animation: drift 7s ease-in-out infinite;
 }
 
+/* DCR & NDCR Switch Animations */
+@keyframes tabInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes tabInRight {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pointFadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-tab-in-left {
+  animation: tabInLeft 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-tab-in-right {
+  animation: tabInRight 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-point {
+  animation: pointFadeSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pulseSlow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.05);
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulseSlow 5s ease-in-out infinite;
+}
+
 @keyframes reveal-up {
   to {
     opacity: 1;
@@ -89,6 +167,19 @@
 
   50% {
     transform: translateY(-8px);
+  }
+}
+
+/* Custom Interactive Cursor Styling */
+@media (hover: hover) and (pointer: fine) {
+  body {
+    cursor: default;
+  }
+}
+
+@media (hover: none) or (pointer: coarse) {
+  .custom-cursor-container {
+    display: none !important;
   }
 }
 
