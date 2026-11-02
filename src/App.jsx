@@ -385,14 +385,23 @@ function About() {
 
         <div className="relative min-h-[380px] overflow-hidden rounded-[28px] bg-accent/20">
           <div className="absolute left-8 top-8 z-10 rounded-full border border-secondary/15 bg-background/85 px-4 py-2 text-[10px] font-bold uppercase tracking-[.16em] text-secondary backdrop-blur">
-            Est. 2012 · Redhills, Chennai
+            Est. 2021 · Redhills, Chennai
           </div>
 
           <div className="absolute inset-0 bg-[linear-gradient(135deg,hsl(var(--accent)/.38),transparent_55%)]" />
 
           <div className="absolute bottom-0 right-0 h-[82%] w-[83%] rounded-tl-[160px] bg-secondary/90" />
 
-          <div className="absolute bottom-[25%] right-[14%] h-40 w-56 -skew-y-12 rounded-lg border-4 border-primary/75 bg-[repeating-linear-gradient(90deg,transparent,transparent_25px,rgba(226,178,46,.4)_26px,transparent_27px),repeating-linear-gradient(0deg,transparent,transparent_24px,rgba(226,178,46,.4)_25px,transparent_26px)] shadow-2xl" />
+          <div className="absolute bottom-[18%] right-[10%] flex h-44 w-52 flex-col items-center justify-center rounded-2xl border-4 border-primary/60 bg-white p-4 shadow-2xl">
+            <img
+              src={siteImages.logo}
+              alt="Aspire Energies logo"
+              className="h-28 w-28 object-contain"
+            />
+            <span className="mt-2 text-[11px] font-bold tracking-[.15em] text-secondary">
+              ASPIRE ENERGIES
+            </span>
+          </div>
 
           <div className="absolute bottom-8 left-8 max-w-[230px] text-sm leading-6 text-secondary-foreground/70">
             From rooftop assessments to commissioning day, we make the complex
@@ -595,7 +604,7 @@ function Finance() {
     {
       icon: Grid2X2,
       title: "Solar loan",
-      copy: "Spread the investment across a structured tenure while your system begins offsetting the electricity bill.",
+      copy: "Install solar power system with 0 investment, eliminating huge bills.",
     },
     {
       icon: Factory,
@@ -657,8 +666,8 @@ function Features() {
       "Remote monitoring makes output visible and service proactive, with clear reporting.",
     ],
     [
-      "Designed to last",
-      "Premium components, precise installation and a service plan built around your horizon.",
+      "All over Tamil Nadu and Pondicherry",
+      "Experienced team and unmatched trust with service all over Tamil Nadu and Pondicherry, ensuring every client receives the best.",
     ],
   ];
 
@@ -674,6 +683,17 @@ function Features() {
           <h2 className="display-font mt-4 text-4xl font-extrabold leading-none text-secondary sm:text-5xl">
             Good systems are felt in the details.
           </h2>
+
+          <p className="mt-4 text-sm leading-6 text-secondary/75">
+            Engineered for high yield, zero hassle, and lasting performance for every home and business.
+          </p>
+
+          <div className="mt-8 border-t border-secondary/20 pt-6 text-xs text-secondary/80">
+            <p className="font-bold tracking-wide uppercase text-secondary">Office Address</p>
+            <p className="mt-1.5 leading-5 font-medium">
+              {siteCompany.address}
+            </p>
+          </div>
         </div>
 
         <div className="grid gap-x-10 gap-y-10 sm:grid-cols-2">
@@ -780,7 +800,7 @@ function Contact() {
             copy="Tell us a little about your site. An Aspire Energies advisor will get back to you within one business day with a useful first conversation - not a hard sell."
           />
 
-          <div className="mt-10 space-y-3 text-sm font-medium text-secondary">
+          <div className="mt-10 space-y-3.5 text-sm font-medium text-secondary">
             <a
               href={`tel:${siteCompany.phone.replace(/\s+/g, "")}`}
               className="flex items-center gap-3 hover:text-accent"
@@ -790,10 +810,15 @@ function Contact() {
               {siteCompany.phone}
             </a>
 
-            <p className="flex items-center gap-3">
-              <span className="h-[17px] w-[17px] rounded-full border-2 border-accent" />
-              {siteCompany.locations}
-            </p>
+            <div className="flex items-start gap-3">
+              <span className="mt-1 h-[17px] w-[17px] shrink-0 rounded-full border-2 border-accent" />
+              <div>
+                <p>{siteCompany.locations}</p>
+                <p className="mt-1 text-xs leading-5 text-secondary/75">
+                  {siteCompany.address}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -909,6 +934,10 @@ function Footer() {
 
             <p className="mt-5 max-w-xs text-sm leading-6 text-secondary-foreground/55">
               Independent energy, engineered for the places that matter.
+            </p>
+
+            <p className="mt-3 max-w-xs text-xs leading-5 text-secondary-foreground/45">
+              {siteCompany.address}
             </p>
           </div>
 
