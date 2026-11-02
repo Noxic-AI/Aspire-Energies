@@ -425,9 +425,9 @@ function Hero() {
 
         <div className="mt-20 grid max-w-2xl grid-cols-3 gap-5 border-t border-secondary-foreground/20 pt-6 sm:gap-10">
           {[
-            ["12+", "years building"],
-            ["48.6 MWp", "installed capacity"],
-            ["25 yr", "performance promise"],
+            ["5+", "years building"],
+            ["12 MWp", "installed capacity"],
+            ["30 yr", "performance promise"],
           ].map(([value, label], index) => (
             <div
               key={label}
