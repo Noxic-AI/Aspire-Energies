@@ -1,4 +1,5 @@
 export const siteImages = {
+  logo: "/logo.png",
   hero: "/hero-solar.png",
   projects: {
     campus: "/project-campus.png",
@@ -10,7 +11,7 @@ export const siteImages = {
 };
 
 export const siteCompany = {
-  name: "HelioGrid Solar Systems",
+  name: "Aspire Energies",
   phone: "+91 96770 58193",
   locations: "Redhills, Chennai",
 };

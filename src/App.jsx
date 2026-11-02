@@ -99,7 +99,7 @@ function Motion({ children, className = "", delay = 0 }) {
   );
 }
 
-function Logo() {
+function Logo({ light = false }) {
   return (
     <a
       href="#home"
@@ -110,16 +110,28 @@ function Logo() {
       className="flex items-center gap-3"
       data-testid="link-logo"
     >
-      <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground shadow-[0_8px_20px_rgba(220,168,38,.22)]">
-        <Sun size={22} strokeWidth={2.5} />
-      </span>
+      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl border border-secondary/10 bg-white p-0.5 shadow-[0_4px_12px_rgba(0,0,0,.08)]">
+        <img
+          src={siteImages.logo}
+          alt="Aspire Energies"
+          className="h-full w-full object-contain"
+        />
+      </div>
 
       <span className="leading-none">
-        <span className="block text-[15px] font-bold tracking-[.12em] text-secondary">
-          HELIOGRID
+        <span
+          className={`block text-[15px] font-bold tracking-[.12em] ${
+            light ? "text-secondary-foreground" : "text-secondary"
+          }`}
+        >
+          ASPIRE ENERGIES
         </span>
 
-        <span className="mt-1 block text-[9px] font-semibold tracking-[.3em] text-muted-foreground">
+        <span
+          className={`mt-1 block text-[9px] font-semibold tracking-[.3em] ${
+            light ? "text-secondary-foreground/65" : "text-muted-foreground"
+          }`}
+        >
           SOLAR SYSTEMS
         </span>
       </span>
@@ -269,7 +281,7 @@ function Hero() {
           </h1>
 
           <p className="reveal delay-2 mt-7 max-w-lg text-lg leading-8 text-secondary-foreground/75">
-            HelioGrid designs and delivers solar systems that make energy more
+            Aspire Energies designs and delivers solar systems that make energy more
             predictable, more independent, and ready for what comes next.
           </p>
 
@@ -331,7 +343,7 @@ function About() {
       <div className="container-shell grid gap-14 lg:grid-cols-[1.1fr_.9fr] lg:gap-24">
         <div>
           <SectionHeading
-            eyebrow="Why HelioGrid"
+            eyebrow="Why Aspire Energies"
             title="Good energy is a long-term relationship."
             copy="A solar system is an important decision. We bring the care of an owner, the rigor of an engineer, and the clarity of a good advisor to every project."
           />
@@ -657,7 +669,7 @@ function Features() {
     >
       <div className="container-shell grid gap-12 lg:grid-cols-[.65fr_1.35fr]">
         <div>
-          <p className="eyebrow text-secondary/65">The HelioGrid standard</p>
+          <p className="eyebrow text-secondary/65">The Aspire Energies standard</p>
 
           <h2 className="display-font mt-4 text-4xl font-extrabold leading-none text-secondary sm:text-5xl">
             Good systems are felt in the details.
@@ -765,7 +777,7 @@ function Contact() {
           <SectionHeading
             eyebrow="Let's talk energy"
             title="Your roof has more to say."
-            copy="Tell us a little about your site. A HelioGrid advisor will get back to you within one business day with a useful first conversation - not a hard sell."
+            copy="Tell us a little about your site. An Aspire Energies advisor will get back to you within one business day with a useful first conversation - not a hard sell."
           />
 
           <div className="mt-10 space-y-3 text-sm font-medium text-secondary">
@@ -893,7 +905,7 @@ function Footer() {
       <div className="container-shell">
         <div className="flex flex-col justify-between gap-10 sm:flex-row">
           <div>
-            <Logo />
+            <Logo light />
 
             <p className="mt-5 max-w-xs text-sm leading-6 text-secondary-foreground/55">
               Independent energy, engineered for the places that matter.
@@ -915,7 +927,7 @@ function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col justify-between gap-3 border-t border-secondary-foreground/15 pt-5 text-[11px] text-secondary-foreground/45 sm:flex-row">
-          <span>© 2024 HelioGrid Solar Systems Pvt. Ltd.</span>
+          <span>© 2024 Aspire Energies Pvt. Ltd.</span>
           <span>Made for a brighter baseline.</span>
         </div>
       </div>
@@ -925,7 +937,7 @@ function Footer() {
 
 function App() {
   useEffect(() => {
-    document.title = "HelioGrid Solar - The power to choose";
+    document.title = "Aspire Energies - The power to choose";
   }, []);
 
   return (

@@ -1,6 +1,6 @@
-# HelioGrid Solar Landing Page
+# Aspire Energies Landing Page
 
-A React + Vite single-page marketing site for HelioGrid Solar Systems.
+A React + Vite single-page marketing site for Aspire Energies.
 
 ## Stack
 
