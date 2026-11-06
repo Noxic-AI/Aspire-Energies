@@ -371,17 +371,63 @@ function SectionHeading({ eyebrow, title, copy, dark = false }) {
 }
 
 function Hero() {
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.defaultMuted = true;
+    video.muted = true;
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => setIsPlaying(true))
+        .catch(() => {
+          setIsPlaying(false);
+          const playOnGesture = () => {
+            video
+              .play()
+              .then(() => setIsPlaying(true))
+              .catch(() => {});
+            window.removeEventListener("click", playOnGesture);
+            window.removeEventListener("touchstart", playOnGesture);
+          };
+          window.addEventListener("click", playOnGesture, { once: true });
+          window.addEventListener("touchstart", playOnGesture, { once: true });
+        });
+    }
+  }, []);
+
+  const togglePlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (video.paused) {
+      video.play().then(() => setIsPlaying(true)).catch(() => {});
+    } else {
+      video.pause();
+      setIsPlaying(false);
+    }
+  };
+
   return (
     <section
       id="home"
       className="relative flex min-h-[680px] scroll-mt-24 items-end overflow-hidden bg-secondary pt-24 text-secondary-foreground sm:min-h-[740px] sm:pt-28"
     >
       <video
+        ref={videoRef}
         autoPlay
         loop
         muted
         playsInline
+        preload="auto"
         poster={siteImages.hero}
+        onEnded={(e) => {
+          e.currentTarget.currentTime = 0;
+          e.currentTarget.play().catch(() => {});
+        }}
         className="absolute inset-0 h-full w-full object-cover object-center opacity-85"
       >
         <source src={siteImages.heroVideo || "/hero-video.mp4"} type="video/mp4" />
@@ -394,6 +440,27 @@ function Hero() {
 
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,36,43,.92)_0%,rgba(9,36,43,.72)_40%,rgba(9,36,43,.2)_100%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(9,36,43,.82),transparent_42%)]" />
+
+      {/* Video Loop Indicator and Control */}
+      <div className="absolute bottom-6 right-6 z-20 hidden items-center gap-2 sm:flex">
+        <button
+          onClick={togglePlay}
+          className="flex items-center gap-2 rounded-full border border-secondary-foreground/20 bg-secondary/60 px-3.5 py-1.5 text-[11px] font-semibold text-secondary-foreground backdrop-blur-md transition-all hover:bg-secondary/80 hover:border-primary/50"
+          title={isPlaying ? "Click to pause video" : "Click to play video"}
+        >
+          <span className="relative flex h-2 w-2">
+            {isPlaying && (
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
+            )}
+            <span
+              className={`relative inline-flex h-2 w-2 rounded-full ${
+                isPlaying ? "bg-primary" : "bg-muted-foreground"
+              }`}
+            />
+          </span>
+          <span>{isPlaying ? "Looping Video" : "Video Paused"}</span>
+        </button>
+      </div>
 
       <div className="container-shell relative z-10 pb-20 pt-20 sm:pb-24">
         <div className="max-w-[720px]">
