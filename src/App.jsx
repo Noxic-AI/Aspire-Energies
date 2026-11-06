@@ -376,13 +376,23 @@ function Hero() {
       id="home"
       className="relative flex min-h-[680px] scroll-mt-24 items-end overflow-hidden bg-secondary pt-24 text-secondary-foreground sm:min-h-[740px] sm:pt-28"
     >
-      <img
-        src={siteImages.hero}
-        alt="Modern home with rooftop solar panels at sunrise"
-        className="absolute inset-0 h-full w-full object-cover object-center opacity-80"
-      />
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        poster={siteImages.hero}
+        className="absolute inset-0 h-full w-full object-cover object-center opacity-85"
+      >
+        <source src={siteImages.heroVideo || "/hero-video.mp4"} type="video/mp4" />
+        <img
+          src={siteImages.hero}
+          alt="Aspire Energies solar installation"
+          className="h-full w-full object-cover object-center"
+        />
+      </video>
 
-      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,36,43,.94)_0%,rgba(9,36,43,.74)_40%,rgba(9,36,43,.16)_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,36,43,.92)_0%,rgba(9,36,43,.72)_40%,rgba(9,36,43,.2)_100%)]" />
       <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(9,36,43,.82),transparent_42%)]" />
 
       <div className="container-shell relative z-10 pb-20 pt-20 sm:pb-24">

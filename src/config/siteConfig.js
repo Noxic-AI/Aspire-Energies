@@ -1,6 +1,7 @@
 export const siteImages = {
   logo: "/logo.png",
   hero: "/hero-solar.png",
+  heroVideo: "/hero-video.mp4",
   projects: {
     campus: "/project-campus.png",
     factory: "/project-factory.png",
